@@ -3,28 +3,45 @@ package main
 import (
 	"embed"
 	"fmt"
-	"io"
-	"net/http"
-	"os/exec"
-	"personal_work/host_info/linux"
-
 	"github.com/creack/pty"
 	"github.com/olahol/melody"
+	"net/http"
+	"os/exec"
+	"strconv"
 )
 
 func main() {
 	// 初始化日志
 	//initlog.Initlog()
 	// 本机IP
-	linux.GetLocalIp()
+	//linux.GetLocalIp()
+	//tcp.OpsServer()
 
-	WebTerminal()
+	//WebTerminal()
+	//web_terminal.Demo()
+	//web_terminal.WebTerminalDemo()
 
-	//web_terminal.WebTerminal()
-	//web_terminal.WebTerminalVim()
+	var ifHCOutOctets_start, ifHCOutOctets_end uint64
+	ifHCOutOctets_start = 172252719015828
+	ifHCOutOctets_end = 172249605304388
+	// 假设1: ifHCOutOctets_start 大，ifHCOutOctets_end 小     结果为正
+	// 假设2: ifHCOutOctets_start 小，ifHCOutOctets_end 大     结果为负
+
+	first := int64(ifHCOutOctets_start - ifHCOutOctets_end)
+	fmt.Println("first: ", first)
+
+	fmt.Println("000000000000", float64(int64(first))/float64(61))
+	IfHCOutFloatValue := 8 * (float64(int64(first)) / float64(61))
+	fmt.Println("1111111111", IfHCOutFloatValue)
 }
 
-//go:embed testdata/test.txt
+func FloatFomatStr(receiver float64) float64 {
+	IfHCInOctets := (strconv.FormatFloat(receiver, 'f', 2, 64))
+	value, _ := strconv.ParseFloat(IfHCInOctets, 64)
+	return value
+}
+
+//go:embed index.html node_modules/xterm/css/xterm.css node_modules/xterm/lib/xterm.js
 var content embed.FS
 
 func WebTerminal() {
@@ -43,7 +60,7 @@ func WebTerminal() {
 			if err != nil {
 				return
 			}
-			//fmt.Println("f.Read: ", string(buf[:read]))
+			fmt.Println("f.Read: ", string(buf[:read]))
 			m.Broadcast(buf[:read]) // 将数据发送给网页
 		}
 	}()
@@ -53,20 +70,12 @@ func WebTerminal() {
 		f.Write(msg) // 将消息写到虚拟终端
 	})
 
-	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/webterminal", func(w http.ResponseWriter, r *http.Request) {
 		m.HandleRequest(w, r) // 访问 /webterminal 时将转交给melody处理
 	})
 
-	http.Handle("/test.txt", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		file, err := content.Open("testdata/test.txt")
-		if err != nil {
-			http.Error(w, "File not found", http.StatusNotFound)
-			return
-		}
-		defer file.Close()
+	fs := http.FileServer(http.FS(content))
+	http.Handle("/", http.StripPrefix("/", fs)) // 设置静态文件服务
 
-		io.Copy(w, file)
-	}))
-
-	http.ListenAndServe("0.0.0.0:8080", nil) // 启动服务器，访问 http://本机(服务器)IP地址:22333/ 进行测试
+	http.ListenAndServe("0.0.0.0:8080", nil) // 启动服务器，访问 http://本机(服务器)IP地址:8080/ 进行测试
 }
