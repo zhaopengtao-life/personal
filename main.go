@@ -7,7 +7,6 @@ import (
 	"github.com/olahol/melody"
 	"net/http"
 	"os/exec"
-	"strconv"
 )
 
 func main() {
@@ -20,25 +19,6 @@ func main() {
 	//WebTerminal()
 	//web_terminal.Demo()
 	//web_terminal.WebTerminalDemo()
-
-	var ifHCOutOctets_start, ifHCOutOctets_end uint64
-	ifHCOutOctets_start = 172252719015828
-	ifHCOutOctets_end = 172249605304388
-	// 假设1: ifHCOutOctets_start 大，ifHCOutOctets_end 小     结果为正
-	// 假设2: ifHCOutOctets_start 小，ifHCOutOctets_end 大     结果为负
-
-	first := int64(ifHCOutOctets_start - ifHCOutOctets_end)
-	fmt.Println("first: ", first)
-
-	fmt.Println("000000000000", float64(int64(first))/float64(61))
-	IfHCOutFloatValue := 8 * (float64(int64(first)) / float64(61))
-	fmt.Println("1111111111", IfHCOutFloatValue)
-}
-
-func FloatFomatStr(receiver float64) float64 {
-	IfHCInOctets := (strconv.FormatFloat(receiver, 'f', 2, 64))
-	value, _ := strconv.ParseFloat(IfHCInOctets, 64)
-	return value
 }
 
 //go:embed index.html node_modules/xterm/css/xterm.css node_modules/xterm/lib/xterm.js
