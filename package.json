@@ -1,0 +1,23 @@
+{
+  "name": "personal",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \\\"Error: no test.txt specified\\\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhaopengtao-life/personal.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zhaopengtao-life/personal/issues"
+  },
+  "homepage": "https://github.com/zhaopengtao-life/personal#readme",
+  "dependencies": {
+    "xterm": "^5.3.0"
+  }
+}
